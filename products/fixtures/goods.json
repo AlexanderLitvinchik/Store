@@ -1,0 +1,14 @@
+[
+  {
+    "model": "products.product",
+    "pk": 1,
+    "fields": {
+      "name": "╒єфш ўхЁэюую ЎтхЄр ё ьюэюуЁрььрьш adidas Originals",
+      "description": "╠ уър  Єърэ№ фы  ётшЄ°юЄют. ╤Єшы№ ш ъюьЇюЁЄ Ц ¤Єю юсЁрч цшчэш",
+      "price": "6090.00",
+      "quantity": 10,
+      "image": "products_images/Adidas-hoodie_2l6znyI.png",
+      "category": 1
+    }
+  }
+]
