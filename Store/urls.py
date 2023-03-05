@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from products.views import index
+from products.views import IndexView
 # для отброжения фотограий
 from django.conf.urls.static import static
 # cделали именно так чтобы подтянуть все настройки
@@ -23,7 +23,7 @@ from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', index, name='index'),
+    path('', IndexView.as_view(), name='index'),
     # в include вторым апараметром пишется имя приложения не понятно почему(если не писать то вообще работать не будет)
     # namespace позволяет оброщаться к url  через namesppace в шаблонах
     # напрмер чтобы вызывать функцию index из приложения products надо написть
