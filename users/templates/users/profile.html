@@ -17,7 +17,7 @@
                          class="img-thumbnail">
                 </div>
                 {#                enctype="multipart/form-data" позволяет добовлять изоброжение#}
-                <form action="{% url 'users:profile' %}" method="post" enctype="multipart/form-data">
+                <form action="{% url 'users:profile' user.id %}" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="form-row">
                         <div class="col-lg-6">

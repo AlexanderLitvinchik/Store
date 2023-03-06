@@ -1,14 +1,25 @@
 from django.shortcuts import render, HttpResponseRedirect
 from users.models import User
 from users.forms import UserLoginForm, UserRegistrationForm, UserProfileForm
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.contrib import auth, messages
-
 from django.contrib.auth.decorators import login_required
 from products.models import Basket
+from django.views.generic.edit import CreateView, UpdateView
 
 
 # Create your views here.
+
+
+class UserRegistrationView(CreateView):
+    model = User
+    # передаем всего лишь ссылку а сам класс вызовится под капотам
+    form_class = UserRegistrationForm
+    template_name = 'users/registration.html'
+    # куда перенаправляем
+    success_url = reverse_lazy('users:login')
+
+
 def registration(request):
     if request.method == 'POST':
         form = UserRegistrationForm(data=request.POST)
@@ -26,6 +37,7 @@ def registration(request):
 
     context = {'form': form}
     return render(request, 'users/registration.html', context)
+
 
 
 def login(request):
@@ -49,6 +61,24 @@ def login(request):
         form = UserLoginForm
     context = {'form': form}
     return render(request, 'users/login.html', context)
+
+
+class UserProfileView(UpdateView):
+    model = User
+    form_class = UserProfileForm
+    template_name = 'users/profile.html'
+
+    #чтобы изменить пользователя нам нужен его айдишник
+    # он же и используется когда перенаправляем пользователя
+    def get_success_url(self):
+        return reverse_lazy('users:profile',args=( self.object.id,))
+
+    def get_context_data(self, **kwargs):
+        context = super(UserProfileView, self).get_context_data()
+        context['title'] = 'Store - личный кабинет'
+        context['baskets']= Basket.objects.filter(user=self.object)
+        return context
+
 
 @login_required
 def profile(request):

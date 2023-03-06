@@ -13,6 +13,7 @@ class ProductListView(ListView):
     model = Product
     template_name = 'products/products.html'
     paginate_by = 3
+
     def get_queryset(self):
         # для начала хаполняем всеми объектами равносильно  Product.objects.all()
         queryset = super(ProductListView, self).get_queryset()
@@ -82,6 +83,7 @@ def basket_add(request, product_id):
     # товар модноо добовлять в разных местах поэтому
     # должны пернаправлять туда откуда мы и пришли
     return HttpResponseRedirect(request.META["HTTP_REFERER"])
+
 
 
 @login_required

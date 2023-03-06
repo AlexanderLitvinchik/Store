@@ -3,6 +3,7 @@ from users.models import User
 from django import forms
 
 
+#параметры взяты из готового шаблона
 class UserLoginForm(AuthenticationForm):
     username = forms.CharField(widget=forms.TextInput(attrs={
         'class': 'form-control py-4', 'placeholder': 'Введите имя пользователя'
