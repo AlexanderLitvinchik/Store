@@ -24,10 +24,11 @@ from django.conf import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', IndexView.as_view(), name='index'),
+    path('accounts/', include(('users.urls', 'users'), namespace='users')),
     # в include вторым апараметром пишется имя приложения не понятно почему(если не писать то вообще работать не будет)
     # namespace позволяет оброщаться к url  через namesppace в шаблонах
     # напрмер чтобы вызывать функцию index из приложения products надо написть
-    #{% url 'products:index' %}
+    # {% url 'products:index' %}
     path('products/', include(('products.urls', 'products'), namespace='products')),
     path('users/', include(('users.urls', 'users'), namespace='users')),
 ]
