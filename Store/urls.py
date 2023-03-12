@@ -30,6 +30,7 @@ urlpatterns = [
     # напрмер чтобы вызывать функцию index из приложения products надо написть
     # {% url 'products:index' %}
     path('products/', include(('products.urls', 'products'), namespace='products')),
+    path('orders/', include('orders.urls', namespace='orders')),
 
     # когда перешли к классам CBV почемув адрессе вместо users  начало отброжаться accounts
     # не понятно почему так работает
@@ -39,6 +40,6 @@ urlpatterns = [
 
 # если находимся на этапе разработки а не на prodactions
 if settings.DEBUG:
-    #для каширование
+    # для каширование
     urlpatterns.append(path('__debug__/', include('debug_toolbar.urls')))
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

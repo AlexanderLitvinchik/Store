@@ -66,6 +66,7 @@ class EmailVerificationView(TitleMixin, TemplateView):
     # метод get мз TemplateView  мы его переоределим
     def get(self, request, *args, **kwargs):
         code = kwargs['code']
+        # у меня была ошибка потому что один пользователь к одной почте
         user = User.objects.get(email=kwargs['email'])
         email_verification = EmailVerification.objects.filter(user=user, code=code)
         # если список не пуст и срок не истек
