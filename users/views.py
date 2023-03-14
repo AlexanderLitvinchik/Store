@@ -1,5 +1,5 @@
-from django.shortcuts import render, HttpResponseRedirect
-from users.models import User
+from django.shortcuts import render,reverse,HttpResponseRedirect ,HttpResponseRedirect
+from users.models import User, EmailVerification
 from users.forms import UserLoginForm, UserRegistrationForm, UserProfileForm
 from django.urls import reverse, reverse_lazy
 from django.contrib import auth, messages
@@ -7,14 +7,15 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.decorators import login_required
 from products.models import Basket
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.edit import  CreateView, UpdateView
 from common.views import TitleMixin
+from django.views.generic.base import TemplateView
 
 
 # Create your views here.
 
 
-class UserRegistrationView(TitleMixin,SuccessMessageMixin, CreateView):
+class UserRegistrationView(TitleMixin, SuccessMessageMixin, CreateView):
     model = User
     # передаем всего лишь ссылку а сам класс вызовится под капотам
     form_class = UserRegistrationForm
@@ -24,10 +25,12 @@ class UserRegistrationView(TitleMixin,SuccessMessageMixin, CreateView):
     success_message = 'Поздравляем! Вы успешно зарегестрировались'
     title = 'Store - Регистрация '
 
+
 # наглядный  пример сто лучше использовать класссы
 class UserLoginView(LoginView):
     template_name = 'users/login.html'
     form_class = UserLoginForm
+    title = 'Store - Авторизация '
 
     def get_success_url(self):
         return reverse_lazy('users:profile', args=(self.request.user.id,))
@@ -44,15 +47,35 @@ class UserProfileView(TitleMixin, UpdateView):
     def get_success_url(self):
         return reverse_lazy('users:profile', args=(self.object.id,))
 
-    def get_context_data(self, **kwargs):
-        context = super(UserProfileView, self).get_context_data()
-        context['baskets'] = Basket.objects.filter(user=self.request.user)
-        return context
+    # def get_context_data(self, **kwargs):
+    #     context = super(UserProfileView, self).get_context_data()
+    #     context['baskets'] = Basket.objects.filter(user=self.request.user)
+    #     return context
 
 
 def logout(request):
     auth.logout(request)
     return HttpResponseRedirect(reverse('index'))
+
+
+class EmailVerificationView(TitleMixin, TemplateView):
+    title = 'Store  - подтверждение электронной почты'
+    template_name = 'users/email_verification.html '
+
+    # в шаблоне срабатывает  get_запрос и вызывается метод
+    # метод get мз TemplateView  мы его переоределим
+    def get(self, request, *args, **kwargs):
+        code = kwargs['code']
+        user = User.objects.get(email=kwargs['email'])
+        email_verification = EmailVerification.objects.filter(user=user, code=code)
+        # если список не пуст и срок не истек
+        if email_verification.exists() and not email_verification.first().is_expired():
+            user.is_verified_email=True
+            user.save()
+            return super(EmailVerificationView, self).get(request, *args, **kwargs)
+        else:
+            return HttpResponseRedirect(reverse('index', ))
+
 
 # def registration(request):
 #     if request.method == 'POST':
