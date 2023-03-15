@@ -24,13 +24,17 @@ from django.conf import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', IndexView.as_view(), name='index'),
-    path('accounts/', include(('users.urls', 'users'), namespace='users')),
+    # path('accounts/', include(('users.urls', 'users'), namespace='users')),
     # в include вторым апараметром пишется имя приложения не понятно почему(если не писать то вообще работать не будет)
     # namespace позволяет оброщаться к url  через namesppace в шаблонах
     # напрмер чтобы вызывать функцию index из приложения products надо написть
     # {% url 'products:index' %}
     path('products/', include(('products.urls', 'products'), namespace='products')),
+
+    # когда перешли к классам CBV почемув адрессе вместо users  начало отброжаться accounts
+    # не понятно почему так работает
     path('users/', include(('users.urls', 'users'), namespace='users')),
+    path('accounts/', include('allauth.urls')),
 ]
 
 # если находимся на этапе разработки а не на prodactions
