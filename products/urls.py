@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import ProductListView, basket_add, basket_remove
-
+from django.views.decorators.cache import cache_page
 app_name = 'products'
 urlpatterns = [
     path('', ProductListView.as_view(), name='index'),

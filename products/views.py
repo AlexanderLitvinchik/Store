@@ -6,7 +6,7 @@ from django.core.paginator import Paginator
 from django.views.generic.base import TemplateView
 from  common.views import TitleMixin
 from django.views.generic.list import ListView
-
+from django.core.cache import cache
 
 # Create your views here.
 class ProductListView(TitleMixin, ListView):
