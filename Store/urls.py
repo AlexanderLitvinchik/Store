@@ -15,6 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+
+from orders.views import stripe_webhook_view
 from products.views import IndexView
 # для отброжения фотограий
 from django.conf.urls.static import static
@@ -36,6 +38,7 @@ urlpatterns = [
     # не понятно почему так работает
     path('users/', include(('users.urls', 'users'), namespace='users')),
     path('accounts/', include('allauth.urls')),
+    path('webhook/stripe/', stripe_webhook_view, name='stripe_webhook'),
 ]
 
 # если находимся на этапе разработки а не на prodactions

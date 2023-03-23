@@ -14,6 +14,8 @@ from orders.models import Order
 from products.models import Basket
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
+
+
 # Create your views here.
 class SuccessTemplateView(TitleMixin, TemplateView):
     template_name = 'orders/success.html'
@@ -21,8 +23,7 @@ class SuccessTemplateView(TitleMixin, TemplateView):
 
 
 class CanceledTemplateView(TemplateView):
-    template_name = 'orders/cancled.html'
-
+    template_name = 'orders/cancel.html'
 
 
 class OrderCreateView(TitleMixin, CreateView):
@@ -42,14 +43,27 @@ class OrderCreateView(TitleMixin, CreateView):
             cancel_url='{}{}'.format(settings.DOMAIN_NAME, reverse('orders:order_canceled')),
         )
         return HttpResponseRedirect(checkout_session.url, status=HTTPStatus.SEE_OTHER)
+
     def form_valid(self, form):
-        #instance сам объект (честно говоря не понимаю почему не  удается получить пользователся
+        # instance сам объект (честно говоря не понимаю почему не  удается получить пользователся
         # в самой модели )
         form.instance.initiator = self.request.user
         return super(OrderCreateView, self).form_valid(form)
 
 
+# @csrf_exempt
+# def stripe_webhook_view(request):
+#   payload = request.body
+#
+#   # For now, you only need to print out the webhook payload so you can see
+#   # the structure.
+#   print(payload)
+#
+#   return HttpResponse(status=200)
 
+#должен позволять обрабатывать оперцмм в stripe
+#работает только тогда когда запустили команду  stripe listen --forward-to 127.0.0.1:8000/webhook/stripe/ в cmd
+#  ине выходим из нее
 
 @csrf_exempt
 def stripe_webhook_view(request):
@@ -61,24 +75,66 @@ def stripe_webhook_view(request):
         event = stripe.Webhook.construct_event(
             payload, sig_header, settings.STRIPE_WEBHOOK_SECRET
         )
-    except ValueError:
+    except ValueError as e:
         # Invalid payload
         return HttpResponse(status=400)
-    except stripe.error.SignatureVerificationError:
+    except stripe.error.SignatureVerificationError as e:
         # Invalid signature
         return HttpResponse(status=400)
 
     # Handle the checkout.session.completed event
     if event['type'] == 'checkout.session.completed':
-        session = event['data']['object']
+        # Retrieve the session. If you require line items in the response, you may include them by expanding line_items.
+        session = stripe.checkout.Session.retrieve(
+            event['data']['object']['id'],
+            expand=['line_items'],
+        )
 
+        line_items = session.line_items
         # Fulfill the purchase...
         fulfill_order(session)
 
     # Passed signature verification
     return HttpResponse(status=200)
-def fulfill_order(session):
-    print("Fulling order")
-    order_id = int(session.metadata.order_id)
-    # order = Order.objects.get(id=order_id)
-    # order.update_after_payment()
+
+
+def fulfill_order(line_items):
+    print("Fulfilling order")
+    order_id = int(line_items.metadata.order_id)
+    order = Order.objects.get(id=order_id)
+    order.update_after_payment()
+
+
+# @csrf_exempt
+# def stripe_webhook_view(request):
+#     payload = request.body
+#     sig_header = request.META['HTTP_STRIPE_SIGNATURE']
+#     event = None
+#
+#     try:
+#         event = stripe.Webhook.construct_event(
+#             payload, sig_header, settings.STRIPE_WEBHOOK_SECRET
+#         )
+#     except ValueError:
+#         # Invalid payload
+#         return HttpResponse(status=400)
+#     except stripe.error.SignatureVerificationError:
+#         # Invalid signature
+#         return HttpResponse(status=400)
+#
+#     # Handle the checkout.session.completed event
+#     if event['type'] == 'checkout.session.completed':
+#         session = event['data']['object']
+#
+#         # Fulfill the purchase...
+#         fulfill_order(session)
+#
+#     # Passed signature verification
+#     return HttpResponse(status=200)
+#
+#
+# def fulfill_order(session):
+#     order_id = int(session.metadata.order_id)
+#     order = Order.objects.get(id=order_id)
+#     order.update_after_payment()
+#     print("Fulling order")
