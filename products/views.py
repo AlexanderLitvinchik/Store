@@ -4,9 +4,10 @@ from users.models import User
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.views.generic.base import TemplateView
-from  common.views import TitleMixin
+from common.views import TitleMixin
 from django.views.generic.list import ListView
 from django.core.cache import cache
+
 
 # Create your views here.
 class ProductListView(TitleMixin, ListView):
@@ -29,9 +30,10 @@ class ProductListView(TitleMixin, ListView):
         return context
 
 
-class IndexView(TitleMixin,TemplateView):
+class IndexView(TitleMixin, TemplateView):
     template_name = 'products/index.html'
     title = 'Store'
+
 
 @login_required
 # добовление в корзину
@@ -52,14 +54,11 @@ def basket_add(request, product_id):
     return HttpResponseRedirect(request.META["HTTP_REFERER"])
 
 
-
 @login_required
 def basket_remove(request, basket_id):
     basket = Basket.objects.get(id=basket_id)
     basket.delete()
     return HttpResponseRedirect(request.META["HTTP_REFERER"])
-
-
 
 # def index(request):
 #     context = {

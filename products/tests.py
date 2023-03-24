@@ -27,7 +27,7 @@ class ProductsListViewCase(TestCase):
     # какая проблема с кодировкой  в json   файлах
     fixtures = ['categories.json', 'goods.json']
 
-    #таким образом выносятся переменные которые используются сразу в нескольких функциях
+    # таким образом выносятся переменные которые используются сразу в нескольких функциях
     def setUp(self):
         self.products = Product.objects.all()
 
@@ -48,6 +48,7 @@ class ProductsListViewCase(TestCase):
         # без list вернет  quryset с одинаковым содержанием
         self.assertEqual(list(response.context_data['object_list']),
                          list(self.products.filter(category_id=category.id)))
+
     def _common_tests(self, response):
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context_data['title'], 'Store - Каталог')

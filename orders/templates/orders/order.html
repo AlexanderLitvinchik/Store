@@ -1,5 +1,5 @@
 {% extends 'products/base.html' %}
-
+{% load humanize %}
 {% block content %}
 
 <!-- Page Content -->
@@ -18,33 +18,19 @@
                     </tr>
                     </thead>
                     <tbody>
+                    {% for purchased_item in object.basket_history.purchased_items %}
                     <tr>
                         <th scope="row">
-                            Худи черного цвета с монограммами adidas Originals
+                             {{ purchased_item.product_name }}
                         </th>
-                        <td>1</td>
-                        <td>6 090,00 руб.</td>
-                        <td>6 090,00 руб.</td>
+                        <td>{{ purchased_item.quantity }}</td>
+                        <td>{{ purchased_item.price| intcomma }}</td>
+                        <td>{{ purchased_item.sum|intcomma }}</td>
                     </tr>
-                    <tr>
-                        <th scope="row">
-                            Синяя куртка The North Face
-                        </th>
-                        <td>1</td>
-                        <td>23 725,00 руб.</td>
-                        <td>23 725,00 руб.</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">
-                            Коричневый спортивный oversized-топ ASOS DESIGN
-                        </th>
-                        <td>2</td>
-                        <td>3 390,00 руб.</td>
-                        <td>6 780,00 руб.</td>
-                    </tr>
+                    {% endfor %}
                     </tbody>
                 </table>
-                <p class="float-right h4 mt-3">Итого 36 595,00 руб.</p>
+                <p class="float-right h4 mt-3">Итого {{ object.basket_history.total_sum|intcomma }} руб.</p>
             </div>
         </div>
     </div>

@@ -52,7 +52,7 @@ class UserRegistrationForm(UserCreationForm):
     def save(self, commit=True):
         user = super(UserRegistrationForm, self).save(commit=True)
         # ссылка будет работатьв течение 48 часов
-        #сделано для паралеьной работы
+        # сделано для паралеьной работы
         send_email_verification.delay(user.id)
         # expiration = now() + timedelta(hours=48)
         # record = EmailVerification.objects.create(code=uuid.uuid4(), user=user, expiration=expiration)

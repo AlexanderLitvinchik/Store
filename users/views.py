@@ -1,4 +1,4 @@
-from django.shortcuts import render,reverse,HttpResponseRedirect ,HttpResponseRedirect
+from django.shortcuts import render, reverse, HttpResponseRedirect, HttpResponseRedirect
 from users.models import User, EmailVerification
 from users.forms import UserLoginForm, UserRegistrationForm, UserProfileForm
 from django.urls import reverse, reverse_lazy
@@ -7,7 +7,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.decorators import login_required
 from products.models import Basket
-from django.views.generic.edit import  CreateView, UpdateView
+from django.views.generic.edit import CreateView, UpdateView
 from common.views import TitleMixin
 from django.views.generic.base import TemplateView
 
@@ -71,12 +71,11 @@ class EmailVerificationView(TitleMixin, TemplateView):
         email_verification = EmailVerification.objects.filter(user=user, code=code)
         # если список не пуст и срок не истек
         if email_verification.exists() and not email_verification.first().is_expired():
-            user.is_verified_email=True
+            user.is_verified_email = True
             user.save()
             return super(EmailVerificationView, self).get(request, *args, **kwargs)
         else:
             return HttpResponseRedirect(reverse('index', ))
-
 
 # def registration(request):
 #     if request.method == 'POST':

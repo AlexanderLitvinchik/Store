@@ -33,7 +33,7 @@ class Order(models.Model):
     def __str__(self):
         return f'Order #{self.id}. {self.first_name} {self.last_name}'
 
-    #удаляем корзину и
+    # удаляем корзину и
     def update_after_payment(self):
         baskets = Basket.objects.filter(user=self.initiator)
         self.status = self.PAID

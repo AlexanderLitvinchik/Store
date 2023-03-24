@@ -36,7 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
-    #для красивого отбражения суммы заказа
+    # для красивого отбражения суммы заказа
     'django.contrib.humanize',
     'allauth',
     'allauth.account',
@@ -162,8 +162,8 @@ LOGIN_URL = '/users/login/'
 
 # sending emails
 
-#для вывода в консоль
-#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# для вывода в консоль
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # будет приходить черз yandex server
 EMAIL_HOST = 'smtp.yandex.com'
@@ -171,7 +171,6 @@ EMAIL_PORT = 465
 EMAIL_HOST_USER = 'Store-server22@yandex.ru'
 EMAIL_HOST_PASSWORD = '21081979Lena'
 EMAIL_USE_SSL = True
-
 
 # OAuth
 AUTHENTICATION_BACKENDS = [
@@ -195,9 +194,7 @@ SOCIALACCOUNT_PROVIDERS = {
 CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
 CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379'
 
-
-
-#stripe
+# stripe
 STRIPE_PUBLIC_KEY = 'pk_test_51MoYHBAu8XagKnbMmuyVubK8rYcVyAKojSzFTkMH8ob3jYDXoHm1l7Nzv79GX8Rl4QiQd3WFxNwfnWjnZNAnLbk000TlQBKQ57'
 STRIPE_SECRET_KEY = 'sk_test_51MoYHBAu8XagKnbM5FaB2bECu1GfBuBn54LzUWuqEzwhrmLTTNJPzQzEd4TXTX6WeZS9U9SBH1NcbfnLlfQ0oV7K00DBEJv7lU'
-STRIPE_WEBHOOK_SECRET='whsec_a87b001273c942c7e75aabd9dd4a406d903275ff42d6e6bfff09fbc7ce9414a8'
+STRIPE_WEBHOOK_SECRET = 'whsec_a87b001273c942c7e75aabd9dd4a406d903275ff42d6e6bfff09fbc7ce9414a8'

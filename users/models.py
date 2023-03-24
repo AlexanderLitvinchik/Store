@@ -5,6 +5,8 @@ from django.urls import reverse
 from django.conf import settings
 
 from django.utils.timezone import now
+
+
 # Create your models here.
 class User(AbstractUser):
     image = models.ImageField(upload_to='users_image', null=True, blank=True)
@@ -24,9 +26,8 @@ class EmailVerification(models.Model):
         return f'EmailVerification object for {self.user.email}'
 
     def send_verification_email(self):
-
         link = reverse('users:email_verification', kwargs={'email': self.user.email, 'code': self.code})
-        verification_link= f'{settings.DOMAIN_NAME}{link}'
+        verification_link = f'{settings.DOMAIN_NAME}{link}'
         subject = f'Подтверждение учетной записи для  {self.user.username} '
         message = 'Для подтверждение учетной записи для  {} передите по ссылке {}'.format(
             self.user.email,
@@ -42,4 +43,4 @@ class EmailVerification(models.Model):
         )
 
     def is_expired(self):
-        return True if now()>=self.expiration else False
+        return True if now() >= self.expiration else False

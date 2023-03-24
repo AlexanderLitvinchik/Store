@@ -13,7 +13,7 @@ from django.utils.timezone import now
 class UserRegistrationTestCase(TestCase):
     def setUp(self):
         self.path = reverse('users:registration')
-        self.data= {
+        self.data = {
             'first_name': 'Александр',
             'last_name': 'Литвинчик',
             'username': 'admin2',
@@ -34,7 +34,6 @@ class UserRegistrationTestCase(TestCase):
     # проверка пост запроа
 
     def test_user_registration_post_success(self):
-
         username = self.data['username']
         # gпроверяем что пользователь не был моздан в системе
         self.assertFalse(User.objects.filter(username=username).exists())
@@ -63,5 +62,4 @@ class UserRegistrationTestCase(TestCase):
         user = User.objects.create(username=username)
         response = self.client.post(self.path, self.data)
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertContains(response, 'Пользователь с таким именем уже существует.',html=True)
-
+        self.assertContains(response, 'Пользователь с таким именем уже существует.', html=True)

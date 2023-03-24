@@ -7,6 +7,8 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
 from django.views.generic.edit import CreateView
+from django.views.generic.list import ListView
+from django.views.generic.detail import DetailView
 from orders.forms import OrderForm
 from django.urls import reverse_lazy, reverse
 from common.views import TitleMixin
@@ -24,6 +26,29 @@ class SuccessTemplateView(TitleMixin, TemplateView):
 
 class CanceledTemplateView(TemplateView):
     template_name = 'orders/cancel.html'
+
+
+class OrderListView(TitleMixin, ListView):
+    template_name = 'orders/orders.html'
+    title = 'Store - Заказы'
+    queryset = Order.objects.all()
+    ordering = ('-created')
+
+    # переопределим метод стобы взялись только те объекты
+    # пользователь которых оплатил или создал заказ
+    def get_queryset(self):
+        queryset = super(OrderListView, self).get_queryset()
+        return queryset.filter(initiator=self.request.user)
+
+
+class OrderDetailView(DetailView):
+    template_name = 'orders/order.html'
+    model = Order
+
+    def get_context_data(self, **kwargs):
+        context = super(OrderDetailView, self).get_context_data(**kwargs)
+        context['title'] = f'Store - Заказ #{self.object.id}'
+        return context
 
 
 class OrderCreateView(TitleMixin, CreateView):
@@ -61,8 +86,8 @@ class OrderCreateView(TitleMixin, CreateView):
 #
 #   return HttpResponse(status=200)
 
-#должен позволять обрабатывать оперцмм в stripe
-#работает только тогда когда запустили команду  stripe listen --forward-to 127.0.0.1:8000/webhook/stripe/ в cmd
+# должен позволять обрабатывать оперцмм в stripe
+# работает только тогда когда запустили команду  stripe listen --forward-to 127.0.0.1:8000/webhook/stripe/ в cmd
 #  ине выходим из нее
 
 @csrf_exempt
@@ -75,10 +100,10 @@ def stripe_webhook_view(request):
         event = stripe.Webhook.construct_event(
             payload, sig_header, settings.STRIPE_WEBHOOK_SECRET
         )
-    except ValueError as e:
+    except ValueError:
         # Invalid payload
         return HttpResponse(status=400)
-    except stripe.error.SignatureVerificationError as e:
+    except stripe.error.SignatureVerificationError:
         # Invalid signature
         return HttpResponse(status=400)
 
@@ -90,7 +115,6 @@ def stripe_webhook_view(request):
             expand=['line_items'],
         )
 
-        line_items = session.line_items
         # Fulfill the purchase...
         fulfill_order(session)
 
@@ -98,12 +122,11 @@ def stripe_webhook_view(request):
     return HttpResponse(status=200)
 
 
-def fulfill_order(line_items):
+def fulfill_order(session):
     print("Fulfilling order")
-    order_id = int(line_items.metadata.order_id)
+    order_id = int(session.metadata.order_id)
     order = Order.objects.get(id=order_id)
     order.update_after_payment()
-
 
 # @csrf_exempt
 # def stripe_webhook_view(request):
