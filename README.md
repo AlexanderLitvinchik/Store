@@ -1,29 +1,42 @@
-Store Server
+# Store Server
+
 The project for study Django.
 
-Stack:
-Python
-PostgreSQL
-Redis
-Local Developing
+#### Stack:
+
+- [Python](https://www.python.org/downloads/)
+- [PostgreSQL](https://www.postgresql.org/)
+- [Redis](https://redis.io/)
+
+## Local Developing
+
 All actions should be executed from the source directory of the project and only after installing all requirements.
 
-Firstly, create and activate a new virtual environment:
-
-python3.9 -m venv ../venv
-source ../venv/bin/activate
-Install packages:
-
-pip install --upgrade pip
-pip install -r requirements.txt
-Run project dependencies, migrations, fill the database with the fixture data etc.:
-
-./manage.py migrate
-./manage.py loaddata <path_to_fixture_files>
-./manage.py runserver 
-Run Redis Server:
-
-redis-server
-Run Celery:
-
-celery -A store worker --loglevel=INFO
+1. Firstly, create and activate a new virtual environment:
+   ```bash
+   python4.1.7 -m venv ../venv
+   source ../venv/bin/activate
+   ```
+   
+2. Install packages:
+   ```bash
+   pip install --upgrade pip
+   pip install -r requirements.txt
+   ```
+   
+3. Run project dependencies, migrations, fill the database with the fixture data etc.:
+   ```bash
+   ./manage.py migrate
+   ./manage.py loaddata <path_to_fixture_files>
+   ./manage.py runserver 
+   ```
+   
+4. Run [Redis Server](https://redis.io/docs/getting-started/installation/):
+   ```bash
+   redis-server
+   ```
+   
+5. Run Celery:
+   ```bash
+   celery -A store worker --loglevel=INFO
+   ```
