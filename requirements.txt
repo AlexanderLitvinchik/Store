@@ -13,6 +13,7 @@ stripe==4.1.0
 
 
 
+
 redis==4.5.1
 celery==5.2.7
 django-redis==5.2.0
