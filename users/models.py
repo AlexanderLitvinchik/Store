@@ -17,7 +17,6 @@ class EmailVerification(models.Model):
     # уникальная ссылка для каждого пользователя
     code = models.UUIDField(unique=True)
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
-
     created = models.DateTimeField(auto_now_add=True)
     # когда заканчивается срок годности ссылки
     expiration = models.DateTimeField()

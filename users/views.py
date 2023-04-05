@@ -1,12 +1,10 @@
-from django.shortcuts import render, reverse, HttpResponseRedirect, HttpResponseRedirect
+from django.shortcuts import HttpResponseRedirect
 from users.models import User, EmailVerification
 from users.forms import UserLoginForm, UserRegistrationForm, UserProfileForm
 from django.urls import reverse, reverse_lazy
-from django.contrib import auth, messages
+from django.contrib import auth
 from django.contrib.messages.views import SuccessMessageMixin
-from django.contrib.auth.views import LoginView, LogoutView
-from django.contrib.auth.decorators import login_required
-from products.models import Basket
+from django.contrib.auth.views import LoginView
 from django.views.generic.edit import CreateView, UpdateView
 from common.views import TitleMixin
 from django.views.generic.base import TemplateView
@@ -26,7 +24,7 @@ class UserRegistrationView(TitleMixin, SuccessMessageMixin, CreateView):
     title = 'Store - Регистрация '
 
 
-# наглядный  пример сто лучше использовать класссы
+# наглядный  пример,  что лучше использовать классы а не функции
 class UserLoginView(LoginView):
     template_name = 'users/login.html'
     form_class = UserLoginForm
@@ -66,7 +64,6 @@ class EmailVerificationView(TitleMixin, TemplateView):
     # метод get мз TemplateView  мы его переоределим
     def get(self, request, *args, **kwargs):
         code = kwargs['code']
-        # у меня была ошибка потому что один пользователь к одной почте
         user = User.objects.get(email=kwargs['email'])
         email_verification = EmailVerification.objects.filter(user=user, code=code)
         # если список не пуст и срок не истек
@@ -123,7 +120,7 @@ class EmailVerificationView(TitleMixin, TemplateView):
 # def profile(request):
 #     if request.method == 'POST':
 #         # не совсем понятно, такое чувтство что мы создали нового пользователмя а не изменили текущего
-#         # почему- то эту проблему решил instance=request.user
+#         # почему- о эту проблему решил instance=request.user
 #         # files=request.FILES для добовления файла в шаблоне profile,
 #         # почему-то не работает может быть изображение не подходит по размерам, проверить позже
 #         form = UserProfileForm(instance=request.user, data=request.POST, files=request.FILES)
