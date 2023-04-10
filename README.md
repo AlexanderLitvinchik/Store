@@ -13,10 +13,7 @@ The project for study Django.
 All actions should be executed from the source directory of the project and only after installing all requirements.
 
 1. Firstly, create and activate a new virtual environment:
-   ```bash
-   python4.1.7 -m venv ../venv
-   source ../venv/bin/activate
-   ```
+ 
    
 2. Install packages:
    ```bash
@@ -26,9 +23,9 @@ All actions should be executed from the source directory of the project and only
    
 3. Run project dependencies, migrations, fill the database with the fixture data etc.:
    ```bash
-   ./manage.py migrate
-   ./manage.py loaddata <path_to_fixture_files>
-   ./manage.py runserver 
+   python manage.py migrate
+   python manage.py loaddata <path_to_fixture_files>
+   python manage.py runserver 
    ```
    
 4. Run [Redis Server](https://redis.io/docs/getting-started/installation/):
@@ -36,7 +33,7 @@ All actions should be executed from the source directory of the project and only
    redis-server
    ```
    
-5. Run Celery:
+5. Added and run Celery:
    ```bash
    celery -A store worker --loglevel=INFO
    ```
