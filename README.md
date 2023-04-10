@@ -33,7 +33,7 @@ All actions should be executed from the source directory of the project and only
    redis-server
    ```
    
-5. Added and run Celery:
+5. Add and run Celery:
    ```bash
    celery -A store worker --loglevel=INFO
    ```
