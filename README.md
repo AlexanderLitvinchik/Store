@@ -37,3 +37,4 @@ All actions should be executed from the source directory of the project and only
    ```bash
    celery -A store worker --loglevel=INFO
    ```
+6. You also can connect to Stripe to pay for products 
