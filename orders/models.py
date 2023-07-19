@@ -7,7 +7,7 @@ from users.models import User
 # Create your models here.
 
 class Order(models.Model):
-    # почему-то имено такая раьота с статусами
+    # почему-то имено такая работа со статусами
     CREATED = 0
     PAID = 1
     ON_WAY = 2
@@ -42,4 +42,12 @@ class Order(models.Model):
             'total_sum': float(baskets.total_sum()),
         }
         baskets.delete()
+        self.save()
+
+    def update_basket_history(self):
+        baskets = Basket.objects.filter(user=self.initiator)
+        self.basket_history = {
+            'purchased_items': [basket.de_json() for basket in baskets],
+            'total_sum': float(baskets.total_sum()),
+        }
         self.save()

@@ -120,7 +120,9 @@ class EmailVerificationView(TitleMixin, TemplateView):
 # def profile(request):
 #     if request.method == 'POST':
 #         # не совсем понятно, такое чувтство что мы создали нового пользователмя а не изменили текущего
-#         # почему- о эту проблему решил instance=request.user
+#         # почему- о эту проблему решил instance==request.user
+          # instance= говрит что не создается новый обект а берется уже существующий  request.user и с ним делаются изменения
+          #data = request.POST для обновления данных
 #         # files=request.FILES для добовления файла в шаблоне profile,
 #         # почему-то не работает может быть изображение не подходит по размерам, проверить позже
 #         form = UserProfileForm(instance=request.user, data=request.POST, files=request.FILES)

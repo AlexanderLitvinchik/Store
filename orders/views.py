@@ -34,7 +34,7 @@ class OrderListView(TitleMixin, ListView):
     queryset = Order.objects.all()
     ordering = ('-created')
 
-    # переопределим метод стобы взялись только те объекты
+    # переопределим метод чтобы взялись только те объекты
     # пользователь которых оплатил или создал заказ
     def get_queryset(self):
         queryset = super(OrderListView, self).get_queryset()
@@ -48,6 +48,7 @@ class OrderDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(OrderDetailView, self).get_context_data(**kwargs)
         context['title'] = f'Store - Заказ #{self.object.id}'
+
         return context
 
 
@@ -67,28 +68,23 @@ class OrderCreateView(TitleMixin, CreateView):
             success_url='{}{}'.format(settings.DOMAIN_NAME, reverse('orders:order_success')),
             cancel_url='{}{}'.format(settings.DOMAIN_NAME, reverse('orders:order_canceled')),
         )
+        order_id = int(checkout_session.metadata.order_id)
+        order = Order.objects.get(id=order_id)
+        order.update_basket_history()
+
         return HttpResponseRedirect(checkout_session.url, status=HTTPStatus.SEE_OTHER)
 
     def form_valid(self, form):
         # instance сам объект (честно говоря не понимаю почему не  удается получить пользователся
         # в самой модели )
+
         form.instance.initiator = self.request.user
         return super(OrderCreateView, self).form_valid(form)
 
 
-# @csrf_exempt
-# def stripe_webhook_view(request):
-#   payload = request.body
-#
-#   # For now, you only need to print out the webhook payload so you can see
-#   # the structure.
-#   print(payload)
-#
-#   return HttpResponse(status=200)
-
 # должен позволять обрабатывать оперцмм в stripe
 # работает только тогда когда запустили команду  stripe listen --forward-to 127.0.0.1:8000/webhook/stripe/ в cmd
-#  ине выходим из нее
+#  и не выходим из нее
 
 @csrf_exempt
 def stripe_webhook_view(request):
@@ -127,37 +123,3 @@ def fulfill_order(session):
     order_id = int(session.metadata.order_id)
     order = Order.objects.get(id=order_id)
     order.update_after_payment()
-
-# @csrf_exempt
-# def stripe_webhook_view(request):
-#     payload = request.body
-#     sig_header = request.META['HTTP_STRIPE_SIGNATURE']
-#     event = None
-#
-#     try:
-#         event = stripe.Webhook.construct_event(
-#             payload, sig_header, settings.STRIPE_WEBHOOK_SECRET
-#         )
-#     except ValueError:
-#         # Invalid payload
-#         return HttpResponse(status=400)
-#     except stripe.error.SignatureVerificationError:
-#         # Invalid signature
-#         return HttpResponse(status=400)
-#
-#     # Handle the checkout.session.completed event
-#     if event['type'] == 'checkout.session.completed':
-#         session = event['data']['object']
-#
-#         # Fulfill the purchase...
-#         fulfill_order(session)
-#
-#     # Passed signature verification
-#     return HttpResponse(status=200)
-#
-#
-# def fulfill_order(session):
-#     order_id = int(session.metadata.order_id)
-#     order = Order.objects.get(id=order_id)
-#     order.update_after_payment()
-#     print("Fulling order")

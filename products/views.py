@@ -17,11 +17,10 @@ class ProductListView(TitleMixin, ListView):
     title = 'Store - Каталог  '
 
     def get_queryset(self):
-        # для начала хаполняем всеми объектами равносильно  Product.objects.all()
+        # для начала заполняем всеми объектами равносильно  Product.objects.all()
         queryset = super(ProductListView, self).get_queryset()
-        # все ддополнительные параметры котрые передаются хранятся в  kwargs
+        # все дополнительные параметры котрые передаются хранятся в  kwargs
         category_id = self.kwargs.get('category_id')
-        # если category_id  пришел по воращаем определленые , иначе  возращаем весь список
         return queryset.filter(category_id=category_id) if category_id else queryset
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -39,9 +38,8 @@ class IndexView(TitleMixin, TemplateView):
 # добовление в корзину
 def basket_add(request, product_id):
     product = Product.objects.get(id=product_id)
-    # берем все корзины пользователся с опредленным продуктом
-    # по скти корзина это типо продукт(с разными полями)
-    # и здесь вернется масимум один элемент так как конктреный продукт для контрного пользователя
+    # получается что у пользователя много корзин, для каждого продукта своя корзина,
+    # воможно лучше было бы иметь всего одну корзину
     baskets = Basket.objects.filter(user=request.user, product=product)
     if not baskets.exists():
         Basket.objects.create(user=request.user, product=product, quantity=1)
@@ -49,7 +47,7 @@ def basket_add(request, product_id):
         basket = baskets.first()
         basket.quantity += 1
         basket.save()
-    # товар модноо добовлять в разных местах поэтому
+    # товар мо;но добовлять в разных местах поэтому
     # должны пернаправлять туда откуда мы и пришли
     return HttpResponseRedirect(request.META["HTTP_REFERER"])
 
