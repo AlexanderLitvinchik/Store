@@ -30,11 +30,12 @@ All actions should be executed from the source directory of the project and only
    
 4. Run [Redis Server](https://redis.io/docs/getting-started/installation/):
    ```bash
-   redis-server
+   Open Ubuntu
+   sudo service redis-server start
    ```
    
 5. Add and run Celery:
    ```bash
-   celery -A store worker --loglevel=INFO
+   celery -A Store worker --loglevel=INFO
    ```
 6. You also can connect to Stripe to pay for products 
