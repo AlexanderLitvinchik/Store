@@ -1,12 +1,12 @@
 from django.shortcuts import render, HttpResponseRedirect
 from products.models import Product, ProductCategory, Basket
-from users.models import User
 from django.contrib.auth.decorators import login_required
-from django.core.paginator import Paginator
 from django.views.generic.base import TemplateView
 from common.views import TitleMixin
 from django.views.generic.list import ListView
 from django.core.cache import cache
+from users.models import User
+from django.core.paginator import Paginator
 
 
 # Create your views here.
@@ -17,7 +17,7 @@ class ProductListView(TitleMixin, ListView):
     title = 'Store - Каталог  '
 
     def get_queryset(self):
-        # для начала заполняем всеми объектами равносильно  Product.objects.all()
+        # Product.objects.all()
         queryset = super(ProductListView, self).get_queryset()
         # все дополнительные параметры котрые передаются хранятся в  kwargs
         category_id = self.kwargs.get('category_id')
@@ -35,11 +35,9 @@ class IndexView(TitleMixin, TemplateView):
 
 
 @login_required
-# добовление в корзину
 def basket_add(request, product_id):
     product = Product.objects.get(id=product_id)
     # получается что у пользователя много корзин, для каждого продукта своя корзина,
-    # воможно лучше было бы иметь всего одну корзину
     baskets = Basket.objects.filter(user=request.user, product=product)
     if not baskets.exists():
         Basket.objects.create(user=request.user, product=product, quantity=1)
@@ -47,7 +45,7 @@ def basket_add(request, product_id):
         basket = baskets.first()
         basket.quantity += 1
         basket.save()
-    # товар мо;но добовлять в разных местах поэтому
+    # товар можно добовлять в разных местах поэтому
     # должны пернаправлять туда откуда мы и пришли
     return HttpResponseRedirect(request.META["HTTP_REFERER"])
 
@@ -72,7 +70,7 @@ def basket_remove(request, basket_id):
 #     # первый список , второй парметр  сколько товар нужно отрброжатьна странице
 #     per_page = 3
 #     paginator = Paginator(products, per_page)
-#     # передается страница, products_paginator помимо метод productбудет иметь еще и свои например get_page next_page
+#     # передается страница, products_paginator помимо метод product будет иметь еще и свои например get_page next_page
 #     products_paginator = paginator.page(page_number)
 #     context = {
 #         'title': 'Store - Каталог',

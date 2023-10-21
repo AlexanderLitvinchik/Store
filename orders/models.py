@@ -1,5 +1,4 @@
 from django.db import models
-
 from products.models import Basket
 from users.models import User
 
@@ -7,7 +6,6 @@ from users.models import User
 # Create your models here.
 
 class Order(models.Model):
-    # почему-то имено такая работа со статусами
     CREATED = 0
     PAID = 1
     ON_WAY = 2
@@ -26,14 +24,13 @@ class Order(models.Model):
     # связать с product тоже не возможна  так как может меняться цена и другие пармаетры
     basket_history = models.JSONField(default=dict)
     created = models.DateTimeField(auto_now_add=True)
-    # user  который делает заказ , если удалился пользователь то его заказы удаться автоматически
     initiator = models.ForeignKey(to=User, on_delete=models.CASCADE)
     status = models.SmallIntegerField(default=CREATED, choices=STATUSES)
 
     def __str__(self):
         return f'Order #{self.id}. {self.first_name} {self.last_name}'
 
-    # удаляем корзину и
+
     def update_after_payment(self):
         baskets = Basket.objects.filter(user=self.initiator)
         self.status = self.PAID

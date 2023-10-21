@@ -1,0 +1,51 @@
+version: '3'
+services:
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./Store:/app/Store
+    environment:
+      - DATABASE_URL=postgres://store_username:store_password@db:5432/store_db
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - redis
+#      - celery
+    networks:
+      - mynetwork
+
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: store_db
+      POSTGRES_USER: store_username
+      POSTGRES_PASSWORD: store_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - mynetwork
+
+  redis:
+    image: redis:latest
+    networks:
+      - mynetwork
+
+#  celery:
+#    build:
+#      context: .  # Путь к контексту сборки для celery
+#    command: celery -A Store worker --loglevel=info
+#    depends_on:
+#      - db
+#      - redis
+#    networks:
+#      - mynetwork
+#
+networks:
+  mynetwork:
+
+volumes:
+  postgres_data:

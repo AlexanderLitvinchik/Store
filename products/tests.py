@@ -2,13 +2,11 @@ from http import HTTPStatus
 from django.test import TestCase
 from django.urls import reverse
 
-from users.models import User
 from products.models import Product, ProductCategory
 
 
 # Create your tests here.
 
-# каждый метод должен начинать со слова text
 class IndexViewTestCase(TestCase):
 
     def test_view(self):

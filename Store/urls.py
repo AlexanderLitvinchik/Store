@@ -34,7 +34,7 @@ urlpatterns = [
     path('products/', include(('products.urls', 'products'), namespace='products')),
     path('orders/', include('orders.urls', namespace='orders')),
 
-    # когда перешли к классам CBV почемув адрессе вместо users  начало отброжаться accounts
+    # когда перешли к классам CBV почему в адрессе вместо users  начало отброжаться accounts
     # не понятно почему так работает
     path('users/', include(('users.urls', 'users'), namespace='users')),
     path('accounts/', include('allauth.urls')),

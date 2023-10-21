@@ -1,7 +1,6 @@
 import stripe
 from django.conf import settings
 from django.db import models
-
 from users.models import User
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -16,7 +15,7 @@ class ProductCategory(models.Model):
     def __str__(self):
         return self.name
 
-    # для отоброжения в админке. странно, что здесь пишем
+    # для отоброжения в админке странно, что здесь пишем
     class Meta:
         verbose_name = 'category'
         verbose_name_plural = 'categories'
@@ -51,7 +50,6 @@ class Product(models.Model):
         return stripe_product_price
 
 
-# для того чтобы total_sum и total qauntity работали
 class BasketQuerySet(models.QuerySet):
     def total_sum(self):
         return sum(basket.sum() for basket in self)
@@ -74,7 +72,6 @@ class Basket(models.Model):
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
     product = models.ForeignKey(to=Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=0)
-    # как только создается объект сразу ставится время
     created_timestamp = models.DateTimeField(auto_now_add=True)
     # для того чтобы total_sum и total_qauntity работали
     objects = BasketQuerySet.as_manager()
